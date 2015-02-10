@@ -4,7 +4,7 @@
 
 #include "object.h"
 
-namespace Lib4D {
+namespace ndim {
 
 	class Cube4D : public Object
 	{

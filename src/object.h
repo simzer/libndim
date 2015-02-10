@@ -5,7 +5,7 @@
 #include <vector>
 #include "vector.h"
 
-namespace Lib4D {
+namespace ndim {
 	
 	typedef Vector<4> Vertex;
 

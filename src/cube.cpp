@@ -1,7 +1,7 @@
 
 #include "cube.h"
 
-namespace Lib4D {
+namespace ndim {
 
 Cube4D::Cube4D() {
 

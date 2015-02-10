@@ -8,7 +8,7 @@
 #include "../src/cube.h"
 #include "../src/camera.h"
 
-using namespace Lib4D;
+using namespace ndim;
 
 class Game {
 public:

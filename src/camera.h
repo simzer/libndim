@@ -5,7 +5,7 @@
 #include "vector.h"
 #include "matrix.h"
 
-namespace Lib4D {
+namespace ndim {
 
 	class Camera {
 

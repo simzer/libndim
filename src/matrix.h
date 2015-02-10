@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace Lib4D {
+namespace ndim {
 
 	template <int dimensions> class Matrix
 	{
