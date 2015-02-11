@@ -40,7 +40,7 @@ void InterfaceHelper::clear() {
 	metadata.clear();
 }
 
-MY4DAPP_API void calculate(
+extern "C" MY4DAPP_API void calculate(
 	float rotXY, float rotYZ, float rotXZ, float rotXW, float rotYW, float rotZW,
 	float movement,
 	float& camXLeft, float& camYLeft, float& camZLeft,
