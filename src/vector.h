@@ -133,6 +133,14 @@ namespace ndim {
 			return result;
 		}
 
+		Vector<dimensions - 1> paralelProjection()
+		{
+			Vector<dimensions - 1> result;
+			for (int axis = 0; axis < dimensions - 1; axis++)
+				result[axis] = c[axis];
+			return result;
+		}
+
 		const double* data() const
 		{
 			return c;

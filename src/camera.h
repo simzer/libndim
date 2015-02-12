@@ -17,7 +17,7 @@ namespace ndim {
 		Vector3D project(Vector4D &vector) {
 			auto result4D = vector - center;
 			result4D = directions * result4D;
-			return result4D.centralProjection();
+			return result4D.paralelProjection();
 		}
 
 		void move(double distance)

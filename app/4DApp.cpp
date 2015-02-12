@@ -13,52 +13,99 @@ using namespace ndim;
 class Game {
 public:
 	Camera camera;
-	Cube4D object;
+	std::vector<Object*> objects;
 	Game();
 };
 
-struct InterfaceHelper {
-	std::vector<int> objectIDs;
-	std::vector<int> vertexNums;
-	std::vector<float> vertexCoordinates;
-	std::vector<float> metadata;
-	void clear();
+class InterfaceHelper {
+public:
+	InterfaceHelper();
+	void reset();
+	void nextObject();
+	void nextFacet();
+	void nextVertex();
+	bool hasObject();
+	bool hasFacet();
+	bool hasVertex();
+	float vertexCoord(int axis);
+private:
+	Vector3D projected;
+	std::vector<Object*>::iterator actObject;
+	std::vector<Facet>::iterator actFacet;
+	std::vector<Vertex>::iterator actVertex;
 };
 
 static Game game;
 static InterfaceHelper helper;
 
-Game::Game() {
+Game::Game() 
+{
 	camera.center = Vector4D({ -10, 0, 0, 0 });
 	camera.directions = Matrix4D::unit();
+	objects.push_back(new Cube4D());
 }
 
-void InterfaceHelper::clear() {
-	objectIDs.clear();
-	vertexNums.clear();
-	vertexCoordinates.clear();
-	metadata.clear();
-}
-
-extern "C" MY4DAPP_API void calculate(
-	float rotXY, float rotYZ, float rotXZ, float rotXW, float rotYW, float rotZW,
-	float movement,
-	float& camXLeft, float& camYLeft, float& camZLeft,
-	float& camXRight, float& camYRight, float& camZRight,
-	float& camRotXLeft, float& camRotYLeft, float& camRotZLeft,
-	float& camRotXRight, float& camRotYRight, float& camRotZRight,
-	int& objectNum,
-	int*& objectIDs,
-	int*& vertexNums,
-	float*& vertexCoordinates,
-	float*& metadata)
+InterfaceHelper::InterfaceHelper()
 {
-	helper.clear();
+	reset();
+}
 
+void InterfaceHelper::reset() {
+	actObject = game.objects.begin();
+	actFacet = (*actObject)->facets.begin();
+	actVertex = (*actFacet).vertices.begin();
+	projected = game.camera.project(*actVertex);
+}
+
+bool InterfaceHelper::hasObject() {
+	return actObject != game.objects.end();
+}
+
+void InterfaceHelper::nextObject() {
+	++actObject;
+	if (actObject != game.objects.end()) {
+		actFacet = (*actObject)->facets.begin();
+		actVertex = (*actFacet).vertices.begin();
+		projected = game.camera.project(*actVertex);
+	}
+}
+
+bool InterfaceHelper::hasFacet() {
+	return actFacet != (*actObject)->facets.end();
+}
+
+void InterfaceHelper::nextFacet() {
+	++actFacet;
+	if (actFacet != (*actObject)->facets.end()) {
+		actVertex = (*actFacet).vertices.begin();
+		projected = game.camera.project(*actVertex);
+	}
+}
+
+bool InterfaceHelper::hasVertex() {
+	return actVertex != (*actFacet).vertices.end();
+}
+
+void InterfaceHelper::nextVertex() {
+	++actVertex;
+	if (actVertex != (*actFacet).vertices.end()) {
+		projected = game.camera.project(*actVertex);
+	}
+}
+
+float InterfaceHelper::vertexCoord(int axis) {
+	return projected[axis];
+}
+
+extern "C" MY4DAPP_API 
+void moveCamera(float rotXY, float rotYZ, float rotXZ,
+                float rotXW, float rotYW, float rotZW,
+                float movement)
+{
 	game.camera.move(movement);
 
 	Matrix<4> camRot =
-		  Matrix<4>::rotator(0, 1, rotXY)
+		Matrix<4>::rotator(0, 1, rotXY)
 		* Matrix<4>::rotator(1, 2, rotYZ)
 		* Matrix<4>::rotator(0, 2, rotXZ)
 		* Matrix<4>::rotator(0, 3, rotXW)
@@ -66,31 +113,32 @@ extern "C" MY4DAPP_API void calculate(
 		* Matrix<4>::rotator(2, 3, rotZW);
 
 	game.camera.rotate(camRot);
-
-	camXLeft = camXRight = game.camera.center[0];
-	camYLeft = camYRight = game.camera.center[1];
-	camZLeft = camZRight = game.camera.center[2];
-
-	camRotXLeft = camRotXRight = game.camera.directions[0][0];
-	camRotYLeft = camRotYRight = game.camera.directions[0][1];
-	camRotZLeft = camRotZRight = game.camera.directions[0][2];
-
-	objectNum = game.object.facets.size();
-
-	for (auto &facet : game.object.facets) {
-		helper.objectIDs.push_back(0);
-		helper.vertexNums.push_back(facet.vertices.size());
-		for (auto &vertex : facet.vertices) {
-			auto projected = game.camera.project(vertex);
-			for (int i = 0; i < 3; i++) {
-				helper.vertexCoordinates.push_back(projected[i]);
-			}
-			helper.metadata.push_back(NAN); // todo: t.b.d
-		}
-	}
-
-	objectIDs = helper.objectIDs.data();
-	vertexNums = helper.vertexNums.data();
-	vertexCoordinates = helper.vertexCoordinates.data();
-	metadata = helper.metadata.data();
 }
+
+extern "C" MY4DAPP_API 
+float cameraPos(int axis)
+{
+	return game.camera.center[axis];
+}
+
+extern "C" MY4DAPP_API 
+float cameraDirection(int axis)
+{
+	return game.camera.directions[0][axis];
+}
+
+extern "C" MY4DAPP_API 
+float cameraHorizont(int axis)
+{
+	return game.camera.directions[1][axis];
+}
+
+extern "C" MY4DAPP_API void resetIterators() { helper.reset(); }
+extern "C" MY4DAPP_API bool hasObject()      { return helper.hasObject(); }
+extern "C" MY4DAPP_API bool hasFacet()       { return helper.hasFacet(); }
+extern "C" MY4DAPP_API bool hasVertex()      { return helper.hasVertex(); }
+extern "C" MY4DAPP_API void nextObject()     { helper.nextObject(); }
+extern "C" MY4DAPP_API void nextFacet()      { helper.nextFacet(); }
+extern "C" MY4DAPP_API void nextVertex()     { helper.nextVertex(); }
+extern "C" MY4DAPP_API float vertexCoord(int axis) { return helper.vertexCoord(axis); }
+extern "C" MY4DAPP_API float vertexMetadata()      { return 0; }

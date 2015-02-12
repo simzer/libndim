@@ -12,20 +12,22 @@
 extern "C" {
 #endif
 
-	// Rotations are absolute.
-	MY4DAPP_API void calculate(
-		float rotXY, float rotYZ, float rotXZ, float rotXW, float rotYW, float rotZW,
-		float movement,
-		float& camXLeft, float& camYLeft, float& camZLeft,
-		float& camXRight, float& camYRight, float& camZRight,
-		float& camRotXLeft, float& camRotYLeft, float& camRotZLeft,
-		float& camRotXRight, float& camRotYRight, float& camRotZRight,
-		int& objectNum,
-		int*& objectIDs,
-		int*& vertexNums,
-		float*& vertexCoordinates,
-		float*& metadata);
-
+	MY4DAPP_API void moveCamera(float rotXY, float rotYZ, float rotXZ,
+	                            float rotXW, float rotYW, float rotZW,
+	                            float movement);
+	MY4DAPP_API float cameraPos(int axis);
+	MY4DAPP_API float cameraDirection(int axis);
+	MY4DAPP_API float cameraHorizont(int axis);
+	MY4DAPP_API void resetIterators();
+	MY4DAPP_API bool hasObject();
+	MY4DAPP_API bool hasFacet();
+	MY4DAPP_API bool hasVertex();
+	MY4DAPP_API void nextObject();
+	MY4DAPP_API void nextFacet();
+	MY4DAPP_API void nextVertex();
+	MY4DAPP_API float vertexCoord(int axis);
+	MY4DAPP_API float vertexMetadata();
+	
 #ifdef __cplusplus
 }
 #endif
