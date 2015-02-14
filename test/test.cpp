@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 
 	printf("Camera position: %f %f %f\n", cameraPos(0), cameraPos(1), cameraPos(2));
 	printf("Camera direction: %f %f %f\n", cameraDirection(0), cameraDirection(1), cameraDirection(2));
-	printf("Camera horizont: %f %f %f\n", cameraHorizont(0), cameraHorizont(1), cameraHorizont(2));
+	printf("Camera up: %f %f %f\n", cameraUp(0), cameraUp(1), cameraUp(2));
 
 	resetIterators();
 	while (hasObject()) {

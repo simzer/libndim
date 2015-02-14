@@ -1,6 +1,8 @@
 
 #include "4DApp.h"
 
+#include <iostream>
+#include <fstream>
 #include <vector>
 
 #include "../src/vector.h"
@@ -20,6 +22,7 @@ public:
 class InterfaceHelper {
 public:
 	InterfaceHelper();
+	~InterfaceHelper();
 	void reset();
 	void nextObject();
 	void nextFacet();
@@ -28,7 +31,11 @@ public:
 	bool hasFacet();
 	bool hasVertex();
 	float vertexCoord(int axis);
+	void moveCamera(float rotXY, float rotYZ, float rotXZ,
+	                float rotXW, float rotYW, float rotZW,
+	                float movement);
 private:
+	std::ofstream logFile;
 	Vector3D projected;
 	std::vector<Object*>::iterator actObject;
 	std::vector<Facet>::iterator actFacet;
@@ -47,7 +54,13 @@ Game::Game()
 
 InterfaceHelper::InterfaceHelper()
 {
+	logFile.open("c:/Users/Laszlo/Desktop/4d/4DApp.log");
 	reset();
+}
+
+InterfaceHelper::~InterfaceHelper()
+{
+	logFile.close();
 }
 
 void InterfaceHelper::reset() {
@@ -97,11 +110,18 @@ float InterfaceHelper::vertexCoord(int axis) {
 	return projected[axis];
 }
 
-extern "C" MY4DAPP_API 
-void moveCamera(float rotXY, float rotYZ, float rotXZ,
-                float rotXW, float rotYW, float rotZW,
-                float movement)
+void InterfaceHelper::moveCamera(float rotXY, float rotYZ, float rotXZ,
+	float rotXW, float rotYW, float rotZW,
+	float movement)
 {
+	logFile << rotXY << ","
+		<< rotYZ << ","
+		<< rotXZ << ","
+		<< rotXW << ","
+		<< rotYW << ","
+		<< rotZW << ","
+		<< movement << "\n";
+
 	game.camera.move(movement);
 
 	Matrix<4> camRot =
@@ -116,20 +136,28 @@ void moveCamera(float rotXY, float rotYZ, float rotXZ,
 }
 
 extern "C" MY4DAPP_API 
+void moveCamera(float rotXY, float rotYZ, float rotXZ,
+                float rotXW, float rotYW, float rotZW,
+                float movement)
+{
+	helper.moveCamera(rotXY, rotYZ, rotXZ,
+	                  rotXW, rotYW, rotZW,
+	                  movement);
+}
+
+extern "C" MY4DAPP_API 
 float cameraPos(int axis)
 {
 	return game.camera.center[axis];
 }
 
 extern "C" MY4DAPP_API 
-float cameraDirection(int axis)
-{
+float cameraDirection(int axis) {
 	return game.camera.directions[0][axis];
 }
 
-extern "C" MY4DAPP_API 
-float cameraHorizont(int axis)
-{
+extern "C" MY4DAPP_API
+float cameraUp(int axis) {
 	return game.camera.directions[1][axis];
 }
 
