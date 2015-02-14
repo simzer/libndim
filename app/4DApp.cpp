@@ -114,25 +114,30 @@ void InterfaceHelper::moveCamera(float rotXY, float rotYZ, float rotXZ,
 	float rotXW, float rotYW, float rotZW,
 	float movement)
 {
-	logFile << rotXY << ","
-		<< rotYZ << ","
-		<< rotXZ << ","
-		<< rotXW << ","
-		<< rotYW << ","
-		<< rotZW << ","
-		<< movement << "\n";
-
 	game.camera.move(movement);
-
 	Matrix<4> camRot =
-		Matrix<4>::rotator(0, 1, rotXY)
+		Matrix<4>::rotator(0, 1, rotXY) // -dy
 		* Matrix<4>::rotator(1, 2, rotYZ)
-		* Matrix<4>::rotator(0, 2, rotXZ)
+		* Matrix<4>::rotator(0, 2, rotXZ) // dx
 		* Matrix<4>::rotator(0, 3, rotXW)
 		* Matrix<4>::rotator(1, 3, rotYW)
-		* Matrix<4>::rotator(2, 3, rotZW);
-
+		* Matrix<4>::rotator(2, 3, rotZW)
+		;
+	
 	game.camera.rotate(camRot);
+
+	if (rotXY != 0 || rotYZ != 0 || rotXZ != 0 || rotXW != 0 || rotYW != 0 || rotZW != 0 || movement != 0) {
+		logFile << rotXY << ","
+			<< rotYZ << ","
+			<< rotXZ << ","
+			<< rotXW << ","
+			<< rotYW << ","
+			<< rotZW << ","
+			<< movement << "\n";
+		logFile << std::string(game.camera.center) << "\n";
+		logFile << std::string(game.camera.directions);
+		logFile << std::string(game.camera.project(Vector4D({ 0, 0, 0, 0 }))) << "\n";
+	}
 }
 
 extern "C" MY4DAPP_API 

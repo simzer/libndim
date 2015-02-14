@@ -17,9 +17,12 @@ namespace ndim {
 		Matrix4D directions;
 		
 		Vector3D project(Vector4D &vector) {
-			auto result4D = vector - center;
-			result4D = directions * result4D + center;
-			return result4D.paralelProjection();
+			Vector4D result4D = vector - center;
+			result4D = directions.inverse() * result4D;
+			Vector3D result3D = result4D.paralelProjection();
+			result3D = directions.minor(3, 3) * result3D;
+			result3D = result3D + center.paralelProjection();
+			return result3D;
 		}
 		
 		void move(double distance)

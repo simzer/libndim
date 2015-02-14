@@ -1,10 +1,16 @@
 
+#include "../src/matrix.h"
 #include "../app/4DApp.h"
 
 #include <cstdio>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
+	ndim::Matrix4D a = ndim::Matrix4D::rotator(0, 1, .2);
+	std::cout << std::string(a.inverse() * a);
+
+
 	float rotXY = 0;
 	float rotYZ = 0;
 	float rotXZ = 0;
