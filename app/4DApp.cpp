@@ -17,6 +17,7 @@ public:
 	Camera camera;
 	std::vector<Object*> objects;
 	Game();
+	void resetCamera();
 };
 
 class InterfaceHelper {
@@ -47,9 +48,14 @@ static InterfaceHelper helper;
 
 Game::Game() 
 {
+	objects.push_back(new Cube4D());
+	resetCamera();
+}
+
+void Game::resetCamera()
+{
 	camera.center = Vector4D({ -10, 0, 0, 0 });
 	camera.directions = Matrix4D::unit();
-	objects.push_back(new Cube4D());
 }
 
 InterfaceHelper::InterfaceHelper()
@@ -164,6 +170,11 @@ float cameraDirection(int axis) {
 extern "C" MY4DAPP_API
 float cameraUp(int axis) {
 	return game.camera.directions[1][axis];
+}
+
+extern "C" MY4DAPP_API
+void resetCamera() {
+	game.resetCamera();
 }
 
 extern "C" MY4DAPP_API void resetIterators() { helper.reset(); }

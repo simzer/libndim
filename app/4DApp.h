@@ -18,6 +18,7 @@ extern "C" {
 	MY4DAPP_API float cameraPos(int axis);
 	MY4DAPP_API float cameraDirection(int axis);
 	MY4DAPP_API float cameraUp(int axis);
+	MY4DAPP_API void resetCamera();
 	MY4DAPP_API void resetIterators();
 	MY4DAPP_API bool hasObject();
 	MY4DAPP_API bool hasFacet();
