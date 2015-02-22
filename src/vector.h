@@ -40,6 +40,10 @@ namespace ndim {
 			return unit;
 		}
 
+		int getDimensions() {
+			return dimensions;
+		}
+
 		double &operator[](int axis) 
 		{
 			return c[axis];
@@ -139,6 +143,12 @@ namespace ndim {
 			for (int axis = 0; axis < dimensions - 1; axis++)
 				result[axis] = c[axis];
 			return result;
+		}
+
+		Vector<dimensions - 1> radialProjection()
+		{
+			auto result = paralelProjection();
+			return result * (abs() / result.abs());
 		}
 
 		const double* data() const

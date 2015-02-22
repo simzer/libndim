@@ -51,6 +51,17 @@ namespace ndim {
 			throw std::logic_error("Cross product matrix is not implemented for this dimension");
 		}
 
+		Matrix transpose()
+		{
+			Matrix res;
+			for (int j = 0; j < dimensions; j++) {
+				for (int i = 0; i < dimensions; i++) {
+					res[i][j] = v[j][i];
+				}
+			}
+			return res;
+		}
+
 		//todo: slow
 		Matrix inverse()
 		{

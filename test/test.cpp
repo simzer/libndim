@@ -17,9 +17,12 @@ int main(int argc, char* argv[])
 	float rotXW = 0;
 	float rotYW = 0;
 	float rotZW = 0;
-	float movement = 0;
+	float movX = 0;
+	float movY = 0;
+	float movZ = 0;
+	float movW = 0;
 
-	moveCamera(rotXY, rotYZ, rotXZ, rotXW, rotYW, rotZW, movement);
+	moveCamera(rotXY, rotYZ, rotXZ, rotXW, rotYW, rotZW, movX, movY, movZ, movW);
 
 	printf("Camera position: %f %f %f\n", cameraPos(0), cameraPos(1), cameraPos(2));
 	printf("Camera direction: %f %f %f\n", cameraDirection(0), cameraDirection(1), cameraDirection(2));

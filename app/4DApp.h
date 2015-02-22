@@ -14,7 +14,7 @@ extern "C" {
 
 	MY4DAPP_API void moveCamera(float rotXY, float rotYZ, float rotXZ,
 	                            float rotXW, float rotYW, float rotZW,
-	                            float movement);
+	                            float movX, float movY, float movZ, float movW);
 	MY4DAPP_API float cameraPos(int axis);
 	MY4DAPP_API float cameraDirection(int axis);
 	MY4DAPP_API float cameraUp(int axis);
@@ -28,7 +28,9 @@ extern "C" {
 	MY4DAPP_API void nextVertex();
 	MY4DAPP_API float vertexCoord(int axis);
 	MY4DAPP_API float vertexMetadata();
-	
+	MY4DAPP_API void enableLog(bool enable);
+	MY4DAPP_API void triggerLog();
+
 #ifdef __cplusplus
 }
 #endif
